@@ -8,6 +8,8 @@
 
 namespace hq\mq;
 
+use Exception;
+
 class MqService
 {
     protected static $appName = '';
@@ -70,7 +72,7 @@ class MqService
         //回调函数->消息处理函数
         $callback = function ($response) use ($routes) {
 
-            //try {
+            try {
                 echo ' [x] ', $response->delivery_info['routing_key'], ':', $response->body, "\n";
                 $responseData = json_decode($response->body, true);
                 $route = $routes[$response->delivery_info['routing_key']];
@@ -80,14 +82,9 @@ class MqService
 
                 //消息应答
                 $response->delivery_info['channel']->basic_ack($response->delivery_info['delivery_tag']);
-            //} catch (BaseException $e) {
-                //Log::write("消息处理失败[{$response->delivery_info['routing_key']}:{$response->body}:{$response->delivery_info['delivery_tag']}]：{$e->getMessage()}");
-            //} catch (Exception $e) {
-                //Log::write("消息处理失败[{$response->delivery_info['routing_key']}:{$response->body}:{$response->delivery_info['delivery_tag']}]：{$e->getMessage()}");
-
-            //}
-
-
+            } catch (Exception $e) {
+                echo "消息处理失败[{$response->delivery_info['routing_key']}:{$response->body}:{$response->delivery_info['delivery_tag']}]：{$e->getMessage()}";
+            }
         };
         Mq::conn($config)->receive($routes, $callback)->close();
     }
