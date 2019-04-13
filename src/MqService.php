@@ -10,7 +10,7 @@ namespace hq\mq;
 
 class MqService
 {
-    private static $appName = '';
+    protected static $appName = '';
 
     //private static $exchangeList = ['hq.order', 'hq.user'];
 
