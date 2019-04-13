@@ -14,7 +14,7 @@ use PhpAmqpLib\Message\AMQPMessage;
 
 class Mq
 {
-    private $config = array(
+    protected $config = array(
         'host' => '118.126.105.239',
         'port' => '5672',
         'user' => 'guest',
@@ -41,18 +41,18 @@ class Mq
     /**
      * @var AMQPStreamConnection 连接
      */
-    private $connection;
+    protected $connection;
 
     /**
      * @var AMQPChannel 消息通道
      */
-    private $channel;
+    protected $channel;
 
     /**
      * Mq constructor.
      * @param array $config 配置信息
      */
-    private function __construct(array $config = [])
+    protected function __construct(array $config = [])
     {
         $this->config = array_merge($this->config, $config);
 
