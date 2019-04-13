@@ -1,0 +1,22 @@
+{
+  "name": "jiangxuewen16/rabbitmq-core",
+  "description": "rabbitmq",
+  "license": "Apache-2.0",
+  "authors": [
+    {
+      "name": "jiangxuewen16",
+      "email": "445251692@qq.com"
+    }
+  ],
+  "require": {
+    "php": ">=7.2",
+    "php-amqplib/php-amqplib": "^2.9"
+  },
+  "autoload": {
+    "psr-4": {
+      "hq\\mq\\": "src"
+    },
+    "files": [
+    ]
+  }
+}
