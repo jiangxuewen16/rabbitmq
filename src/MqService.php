@@ -12,6 +12,28 @@ use Exception;
 
 class MqService
 {
+    protected static $config = array(
+        'host' => '127.0.0.1',
+        'port' => '5672',
+        'user' => 'guest',
+        'password' => 'guest',
+        'vhost' => '/',
+
+        'exchange_type' => 'topic',     //默认topic类型
+        'exchange_key' => '',
+
+        'passive' => false,     //查询某一个队列是否已存在，如果不存在，不想建立该队列
+        'durable' => true,      //是否持久化
+        'auto_delete' => false, //是否自动删除
+
+        'exclusive' => false,   //队列的排他性
+        'no_local' => false,
+        'no_ack' => false,       //是否需不需要应答
+        'nowait' => false,      //该方法需要应答确认
+        'consumer_tag' => ''
+
+    );
+
     protected static $appName = '';
 
     //private static $exchangeList = ['hq.order', 'hq.user'];
@@ -21,14 +43,13 @@ class MqService
     /**
      * @param array $data
      * @param string $routingKey
-     * @param array $config
      * @throws \Exception
      */
-    public static function send(array $data, string $routingKey, array $config = [])
+    public static function send(array $data, string $routingKey)
     {
         $properties = ['content_type' => 'text/plain', 'delivery_mode' => 2];
         $data = json_encode($data);
-        Mq::conn($config)->send($routingKey, $data, $properties)->close();
+        Mq::conn(static::$config)->send($routingKey, $data, $properties)->close();
     }
 
     /**
@@ -36,7 +57,7 @@ class MqService
      * @throws \ErrorException
      * @throws \Exception
      */
-    public static function receive($config = [])
+    public static function receive()
     {
         $routes = [];
         foreach (static::$consumer as $item) {
@@ -62,6 +83,6 @@ class MqService
                 echo "消息处理失败[{$response->delivery_info['routing_key']}:{$response->body}:{$response->delivery_info['delivery_tag']}]：{$e->getMessage()}";
             }
         };
-        Mq::conn($config)->receive($routes, $callback)->close();
+        Mq::conn(static::$config)->receive($routes, $callback)->close();
     }
 }
