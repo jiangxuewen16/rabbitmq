@@ -15,7 +15,7 @@ use PhpAmqpLib\Message\AMQPMessage;
 class Mq
 {
     private $config = array(
-        'host' => '118.126.105.239',
+        'host' => '127.0.0.1',
         'port' => '5672',
         'user' => 'guest',
         'password' => 'guest',

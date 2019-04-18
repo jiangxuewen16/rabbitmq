@@ -16,30 +16,6 @@ class MqService
 
     //private static $exchangeList = ['hq.order', 'hq.user'];
 
-    /*protected static $consumer = [
-        [
-            'name' => 'order',
-            'exchange' => 'hq.order',
-            'route' => 'hq.order.*',
-            'queue' => 'hq-data-cloud.order',
-            'operations' => [
-                ['name' => 'create', 'queue' => 'hq-data-cloud.order.create', 'route' => 'hq.order.create', 'class' => TestService::class, 'method' => 'test'],
-                ['name' => 'refund', 'queue' => 'hq-data-cloud.order.refund', 'route' => 'hq.order.refund', 'class' => StatisticsSpotService::class, 'method' => 'create'],
-            ]
-        ],
-        'user' => [
-            'name' => 'user',
-            'exchange' => 'hq.user',
-            'route' => 'hq.user.*',
-            'queue' => 'hq-data-cloud.user',
-            'operations' => [
-                ['name' => 'register', 'queue' => 'hq-data-cloud.user.register', 'route' => 'hq.user.register', 'class' => StatisticsSpotService::class, 'method' => 'create'],
-                ['name' => 'change', 'queue' => 'hq-data-cloud.user.change', 'route' => 'hq.user.change', 'class' => StatisticsSpotService::class, 'method' => 'create'],
-                ['name' => 'disable', 'queue' => 'hq-data-cloud.user.disable', 'route' => 'hq.user.disable', 'class' => StatisticsSpotService::class, 'method' => 'create'],
-            ]
-        ]
-    ];*/
-
     protected static $consumer = [];
 
     /**
@@ -88,5 +64,4 @@ class MqService
         };
         Mq::conn($config)->receive($routes, $callback)->close();
     }
-
 }
