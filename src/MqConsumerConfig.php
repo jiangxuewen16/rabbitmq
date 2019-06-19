@@ -8,6 +8,9 @@
 
 namespace hq\mq;
 
+use Exception;
+use RuntimeException;
+
 class MqConsumerConfig
 {
     /**
@@ -123,13 +126,13 @@ class MqConsumerConfig
 
     /**
      * @param array $operations
-     * @throws \Exception
+     * @throws Exception
      */
     public function setOperations(array $operations): void
     {
         foreach ($operations as $item) {
             if (isset($this->operations[$item['route']])) {
-                throw new \Exception('路由重复！');
+                throw new RuntimeException('路由重复！');
             }
             $queue = $item['queue'] ?? $this->queue;
             $operation = new MqOperation($this->getExchange(), $queue, $item['route'], $item['class'], $item['method']);

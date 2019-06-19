@@ -8,6 +8,7 @@
 
 namespace hq\mq;
 
+use ErrorException;
 use Exception;
 
 class MqService
@@ -55,19 +56,18 @@ class MqService
      * @param string $routingKey
      * @throws \Exception
      */
-    public static function send(array $data, string $routingKey)
+    public static function send(array $data, string $routingKey): void
     {
         $properties = ['content_type' => 'text/plain', 'delivery_mode' => 2];
-        $data = json_encode($data);
-        Mq::conn(static::$config)->send($routingKey, $data, $properties)->close();
+        $sendStr = json_encode($data);
+        Mq::conn(static::$config)->send($routingKey, $sendStr, $properties)->close();
     }
 
     /**
-     * @param array $config
-     * @throws \ErrorException
-     * @throws \Exception
+     * @throws ErrorException
+     * @throws Exception
      */
-    public static function receive()
+    public static function receive(): void
     {
         $routes = [];
         foreach (static::$consumer as $item) {
@@ -77,7 +77,7 @@ class MqService
         }
 
         //回调函数->消息处理函数
-        $callback = function ($response) use ($routes) {
+        $callback = static function ($response) use ($routes) {
 
             try {
                 echo ' [x] ', $response->delivery_info['routing_key'], ':', $response->body, "\n";
@@ -85,7 +85,7 @@ class MqService
                 $route = $routes[$response->delivery_info['routing_key']];
 
                 //执行消息处理操作
-                call_user_func_array([$route->getClass(), $route->getMethod()], [$responseData]);
+                call_user_func([$route->getClass(), $route->getMethod()], $responseData);
 
                 //消息应答
                 $response->delivery_info['channel']->basic_ack($response->delivery_info['delivery_tag']);
