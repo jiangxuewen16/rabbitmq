@@ -34,6 +34,16 @@ class MqService
 
     );
 
+    public static function setConfig(array $config): void
+    {
+        self::$config = $config;
+    }
+
+    public static function getConfig(): array
+    {
+        return self::$config;
+    }
+
     protected static $appName = '';
 
     //private static $exchangeList = ['hq.order', 'hq.user'];
