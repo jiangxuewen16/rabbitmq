@@ -79,7 +79,7 @@ class Mq
      * @return $this
      * @throws \Exception
      */
-    public function send(string $routingKey, string $data, array $properties = [])
+    public function send(string $routingKey, string $data, array $properties = []): self
     {
         if (empty($routingKey) || empty($data)) {
             throw new \Exception('routingKey 和 data 不能为空！');
@@ -108,14 +108,15 @@ class Mq
      * @return $this
      * @throws \ErrorException
      */
-    public function receive(array $routingList, $callback)
+    public function receive(array $routingList, $callback): self
     {
-        ['exclusive' => $exclusive, 'no_ack' => $noAck, 'nowait' => $nowait,
+        ['exchange_type' => $exchangeType, 'exclusive' => $exclusive, 'no_ack' => $noAck, 'nowait' => $nowait,
             'passive' => $passive, 'durable' => $durable, 'auto_delete' => $autoDelete,
             'consumer_tag' => $consumerTag, 'no_local' => $noLocal] = $this->config;
 
         foreach ($routingList as $route) {
-            list($qName, ,) = $this->channel->queue_declare($route->getQueue(), $passive, $durable, $exclusive, $autoDelete);
+            $this->channel->exchange_declare( $route->getExchange(), $exchangeType, $passive, $durable, $autoDelete);
+            [$qName, ,] = $this->channel->queue_declare($route->getQueue(), $passive, $durable, $exclusive, $autoDelete);
             $this->channel->queue_bind($qName, $route->getExchange(), $route->getRoute());
             $this->channel->basic_consume($qName, $consumerTag, $noLocal, $noAck, $exclusive, $nowait, $callback);
         }
@@ -129,7 +130,7 @@ class Mq
     /**
      * 关闭连接
      */
-    public function close()
+    public function close(): void
     {
         $this->channel->close();
         $this->connection->close();
