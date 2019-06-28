@@ -36,7 +36,7 @@ class Mq
 
     );
 
-    const ALLOW_EXCHANGE_TYPE = ['topic', 'direct', 'fanout', 'header'];
+    public const ALLOW_EXCHANGE_TYPE = ['topic', 'direct', 'fanout', 'header'];
 
     /**
      * @var AMQPStreamConnection 连接
