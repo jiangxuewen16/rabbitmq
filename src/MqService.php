@@ -59,9 +59,9 @@ class MqService
     protected static $delays = [];
 
     /**
-     * @param array $data
+     * @param MqSendDataStruct $data
      * @param string $routingKey 如果为空默认为死信临时缓存交换机
-     * @throws \Exception
+     * @throws Exception
      */
     public static function send(MqSendDataStruct $data, string $routingKey = ''): void
     {
@@ -124,6 +124,7 @@ class MqService
     /**
      * @param array $data
      * @param string $key
+     * @throws Exception
      */
     public static function sendDelay(array $data, string $key): void
     {
