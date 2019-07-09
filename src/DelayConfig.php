@@ -36,7 +36,7 @@ class DelayConfig
     public function __construct(string $name,int $expiry, string $class, string $method)
     {
         $this->name = $name;
-        $this->setExpiry($expiry);
+        $this->expiry = $expiry;
         $this->class = $class;
         $this->method = $method;
         $this->expiry = $expiry;
@@ -47,7 +47,7 @@ class DelayConfig
      */
     public function getExpiry(): int
     {
-        return $this->expiry;
+        return $this->expiry * 1000;
     }
 
     /**
@@ -55,7 +55,7 @@ class DelayConfig
      */
     public function setExpiry(int $expiry): void
     {
-        $this->expiry = $expiry * 1000;
+        $this->expiry = $expiry;
     }
 
     /**

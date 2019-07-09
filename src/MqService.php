@@ -78,7 +78,8 @@ class MqService
     {
         $routes = [];
         foreach (static::$consumer as $item) {
-            $consumerConf = new MqConsumerConfig($item['name'], $item['exchange'], $item['exchange_type'], static::$appName);
+            $exchangeType = $item['exchange_type'] ?? 'topic';
+            $consumerConf = new MqConsumerConfig($item['name'], $item['exchange'], $exchangeType, static::$appName);
             $consumerConf->setOperations($item['operations']);
             $routes += $consumerConf->getOperations();
         }
@@ -118,24 +119,24 @@ class MqService
         };
 
 
-        Mq::conn(static::$config)->setAppName(self::$appName)->receive($routes, $callback, $delayCallback)->close();
+        Mq::conn(static::$config)->setAppName(static::$appName)->receive($routes, $callback, $delayCallback)->close();
     }
 
     /**
-     * @param array $data
+     * @param MqSendDataStruct $data
      * @param string $key
      * @throws Exception
      */
-    public static function sendDelay(array $data, string $key): void
+    public static function sendDelay(MqSendDataStruct $data, string $key): void
     {
         if (!isset(static::$delays[$key])) {
-            throw new RuntimeException('未定义发送key');
+            throw new Exception('未定义发送key');
         }
 
         $delayInfo = static::$delays[$key];
 
         $delayConfig = new DelayConfig($delayInfo['name'], $delayInfo['expiry'], $delayInfo['class'], $delayInfo['method']);
         $properties = ['content_type' => 'text/plain', 'delivery_mode' => AMQPMessage::DELIVERY_MODE_PERSISTENT];
-        Mq::conn(static::$config)->setAppName(self::$appName)->sendDelay($delayConfig, $data, $key, $properties)->close();
+        Mq::conn(static::$config)->setAppName(static::$appName)->sendDelay($delayConfig, $data->toArray(), $key, $properties)->close();
     }
 }
