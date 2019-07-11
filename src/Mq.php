@@ -176,7 +176,7 @@ class Mq
         //临时缓存交换机和临时缓存列队
         $cacheExchangeName = $this->getCacheExchangeName();
         $cacheQueueName = $this->getCacheQueue($delayConfig->getName());
-        $this->channel->exchange_declare($cacheExchangeName, 'direct', false, false, false);         //创建死信缓存数据交换机
+        $this->channel->exchange_declare($cacheExchangeName, 'topic', false, false, false);         //创建死信缓存数据交换机
         $tale = new AMQPTable();
         $tale->set('x-dead-letter-exchange', $this->getDelayExchangeName());
         $tale->set('x-dead-letter-routing-key', $this->getDelayRouteName());
