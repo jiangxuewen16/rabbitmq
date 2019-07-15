@@ -202,7 +202,7 @@ class Mq
         $delayMsg = new DelayMessage($key, $data);
 
         $msg = new AMQPMessage(json_encode($delayMsg->toArray()), $properties);
-        $this->channel->basic_publish($msg, $cacheExchangeName);
+        $this->channel->basic_publish($msg, $cacheExchangeName, $this->getCacheRouter($delayConfig->getName()));
 
         return $this;
     }
