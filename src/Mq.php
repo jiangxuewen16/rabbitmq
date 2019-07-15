@@ -182,7 +182,7 @@ class Mq
         $tale->set('x-dead-letter-routing-key', $this->getDelayRouteName());
         $tale->set('x-message-ttl', $delayConfig->getExpiry());
         $this->channel->queue_declare($cacheQueueName, false, true, false, false, false, $tale);
-        $this->channel->queue_bind($cacheQueueName, $cacheExchangeName);
+        $this->channel->queue_bind($cacheQueueName, $cacheExchangeName, $this->getCacheRouter($delayConfig->getName()));
         return $cacheExchangeName;
     }
 
@@ -277,5 +277,15 @@ class Mq
     {
         $this->appName = $appName;
         return $this;
+    }
+
+    /**
+     * 获取缓存通道路由
+     * @param string $cacheName
+     * @return string
+     */
+    public function getCacheRouter(string $cacheName): string
+    {
+        return "{$this->appName}.cache.{$cacheName}";
     }
 }
