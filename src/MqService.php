@@ -66,7 +66,7 @@ class MqService
     public static function send(MqSendDataStruct $data, string $routingKey = ''): void
     {
         $properties = ['content_type' => 'text/plain', 'delivery_mode' => AMQPMessage::DELIVERY_MODE_PERSISTENT];
-        $sendStr = json_encode($data->toArray());
+        $sendStr = json_encode($data->toArray(), JSON_UNESCAPED_UNICODE);
         Mq::conn(static::$config)->send($routingKey, $sendStr, $properties)->close();
     }
 
