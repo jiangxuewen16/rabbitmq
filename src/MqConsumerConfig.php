@@ -159,14 +159,11 @@ class MqConsumerConfig
     public function setOperations(array $operations): void
     {
         foreach ($operations as $item) {
-            if (isset($this->operations[$item['route']])) {
-                throw new RuntimeException('路由重复！');
-            }
             $queue = $item['queue'] ?? $this->queue;
             $exchangeType = $item['exchange_type'] ?? $this->exchangeType;
             $operation = new MqOperation($this->getExchange(), $exchangeType, $queue, $item['route'], $item['class'], $item['method']);
 
-            $this->operations[$item['route']] = $operation;
+            $this->operations[$item['route']][] = $operation;
 
         }
     }

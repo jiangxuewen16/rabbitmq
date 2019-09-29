@@ -93,7 +93,9 @@ class MqService
                 $route = $routes[$response->delivery_info['routing_key']];
 
                 //执行消息处理操作
-                call_user_func([$route->getClass(), $route->getMethod()], $responseData);
+                foreach ($route as $item) {
+                    call_user_func([$item->getClass(), $item->getMethod()], $responseData);
+                }
 
                 //消息应答
                 $response->delivery_info['channel']->basic_ack($response->delivery_info['delivery_tag']);
